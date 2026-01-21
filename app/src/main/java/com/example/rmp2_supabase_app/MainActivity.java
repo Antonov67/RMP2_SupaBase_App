@@ -13,11 +13,20 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.rmp2_supabase_app.callbacks.DataCallback;
+import com.example.rmp2_supabase_app.models.User;
+import com.example.rmp2_supabase_app.network.Api;
+import com.example.rmp2_supabase_app.network.SigninUserResponse;
+import com.example.rmp2_supabase_app.sevice.SigninService;
+
+import retrofit2.Retrofit;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText emailField, pswrdField;
     Button signinBtn;
     TextView toSignupWndBtn;
+    SigninService signinService = new SigninService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +44,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (!emailField.getText().toString().isEmpty()
                         && !pswrdField.getText().toString().isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Авторизация", Toast.LENGTH_SHORT).show();
+                    User user = new User(emailField.getText().toString(), pswrdField.getText().toString());
+                    signinService.signinUser(user, new DataCallback<String>() {
+                        @Override
+                        public void onLoad(String data) {
+                            Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }
             }
         });
