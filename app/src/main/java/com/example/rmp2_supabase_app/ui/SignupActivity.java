@@ -1,4 +1,4 @@
-package com.example.rmp2_supabase_app;
+package com.example.rmp2_supabase_app.ui;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,49 +13,44 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.rmp2_supabase_app.R;
 import com.example.rmp2_supabase_app.callbacks.DataCallback;
 import com.example.rmp2_supabase_app.models.User;
-import com.example.rmp2_supabase_app.network.Api;
-import com.example.rmp2_supabase_app.network.SigninUserResponse;
 import com.example.rmp2_supabase_app.sevice.SigninService;
+import com.example.rmp2_supabase_app.sevice.SignupService;
 
-import retrofit2.Retrofit;
-
-public class MainActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
 
     EditText emailField, pswrdField;
-    Button signinBtn;
-    TextView toSignupWndBtn;
-    SigninService signinService = new SigninService();
+    Button signupBtn;
+    SignupService signupService = new SignupService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_signup);
 
-        emailField = findViewById(R.id.signinEmailField);
-        pswrdField = findViewById(R.id.signinPswrdField);
-        signinBtn = findViewById(R.id.signinBtn);
-        toSignupWndBtn = findViewById(R.id.toSignupWnd);
+        emailField = findViewById(R.id.signupEmailField);
+        pswrdField = findViewById(R.id.signupPswrdField);
+        signupBtn = findViewById(R.id.signupBtn);
 
-        signinBtn.setOnClickListener(new View.OnClickListener() {
+        signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!emailField.getText().toString().isEmpty()
                         && !pswrdField.getText().toString().isEmpty()) {
                     User user = new User(emailField.getText().toString(), pswrdField.getText().toString());
-                    signinService.signinUser(user, new DataCallback<String>() {
+                    signupService.signupUser(user, new DataCallback<String>() {
                         @Override
                         public void onLoad(String data) {
-                            Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignupActivity.this, data, Toast.LENGTH_SHORT).show();
                         }
                     });
 
                 }
             }
         });
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

@@ -6,16 +6,18 @@ import com.example.rmp2_supabase_app.network.Api;
 import com.example.rmp2_supabase_app.network.AuthUserResponse;
 import com.example.rmp2_supabase_app.network.Utils;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SigninService {
+public class SignupService {
     private final Api api;
 
-    public SigninService() {
+    public SignupService() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -23,13 +25,20 @@ public class SigninService {
         api = retrofit.create(Api.class);
     }
 
-    public void signinUser(User user, DataCallback<String> callback) {
-        Call<AuthUserResponse> response = api.signinUser("password", user);
+    public void signupUser(User user, DataCallback<String> callback) {
+        Call<AuthUserResponse> response = api.signupUser(user);
         response.enqueue(new Callback<AuthUserResponse>() {
             @Override
             public void onResponse(Call<AuthUserResponse> call, Response<AuthUserResponse> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     callback.onLoad(response.body().getAccess_token());
+                } else {
+                    try {
+                        callback.onLoad(response.errorBody().string());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println(call);
                 }
             }
 

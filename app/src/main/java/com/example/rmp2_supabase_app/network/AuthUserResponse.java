@@ -1,6 +1,6 @@
 package com.example.rmp2_supabase_app.network;
 
-public class SigninUserResponse {
+public class AuthUserResponse {
 
     private String access_token;
 
