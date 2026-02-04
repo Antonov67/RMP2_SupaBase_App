@@ -2,7 +2,8 @@ package com.example.rmp2_supabase_app.sevice;
 
 import com.example.rmp2_supabase_app.callbacks.DataCallback;
 import com.example.rmp2_supabase_app.models.User;
-import com.example.rmp2_supabase_app.network.Api;
+import com.example.rmp2_supabase_app.network.AuthApi;
+import com.example.rmp2_supabase_app.network.AuthUserData;
 import com.example.rmp2_supabase_app.network.AuthUserResponse;
 import com.example.rmp2_supabase_app.network.Utils;
 
@@ -13,23 +14,24 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SigninService {
-    private final Api api;
+    private final AuthApi authApi;
 
     public SigninService() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
+                .baseUrl(Utils.AUTH_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        api = retrofit.create(Api.class);
+        authApi = retrofit.create(AuthApi.class);
     }
 
     public void signinUser(User user, DataCallback<String> callback) {
-        Call<AuthUserResponse> response = api.signinUser("password", user);
+        Call<AuthUserResponse> response = authApi.signinUser("password", user);
         response.enqueue(new Callback<AuthUserResponse>() {
             @Override
             public void onResponse(Call<AuthUserResponse> call, Response<AuthUserResponse> response) {
                 if (response.isSuccessful()){
                     callback.onLoad(response.body().getAccess_token());
+                    AuthUserData.id = response.body().getUserId();
                 }
             }
 

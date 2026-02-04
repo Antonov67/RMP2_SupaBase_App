@@ -47,6 +47,7 @@ public class SigninActivity extends AppCompatActivity {
                         @Override
                         public void onLoad(String data) {
                             Toast.makeText(SigninActivity.this, data, Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(SigninActivity.this, OrdersActivity.class));
                         }
                     });
 
